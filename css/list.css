@@ -1,0 +1,21 @@
+ul {
+	list-style-type: none;
+	border: 6px solid red;
+}
+
+ul li{
+	padding: 10px;
+	font-size: 25px;
+	background-color: #42EE65;
+	border: 5px solid white;
+	margin : 5px;
+}
+
+ul li a{
+	text-decoration: none;
+	color: #A093B7;
+}
+
+ul li:hover{
+	background-color: #0000FF;
+}
