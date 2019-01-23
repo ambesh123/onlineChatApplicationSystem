@@ -1,62 +1,90 @@
+<!DOCTYPE html>
 <html>
 <head>
-	<title>Chat</title>
+	<title>CHAT</title>
 	<link rel = "stylesheet" href = "css/sendbox.css" type = "text/css" >
-</head>
-<body >
-	<a href = "dashboard.jsp" id = "home">HOME</a>
-	<table>
-	<%@ page import = "java.sql.*" %>
-	<%
-	String uname = "" + session.getAttribute("uname");
-	String other;
-	String table = "" + session.getAttribute("table");
-	if(table.equals("null") || table.length() == 0){
-		other = "" + request.getParameter("hid");
-		if(uname.compareTo(other) > 0){
-			table = uname + other;
-		}
-		else{
-			table = other + uname;
-		}
-		session.setAttribute("table" , table);
-	}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+	<script >
 
-	Connection con;
-	Statement stmt;
-	ResultSet rs;
-	try
-	{
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mdb","root"
-		,"44221100");
-		stmt = con.createStatement();
-		rs = stmt.executeQuery("select * from "+table);
-		while(rs.next()){
-			out.print("<tr><th>"+rs.getString(1)+" : </th><td>"+rs.getString(2)+" </td></tr>");
+		function saveMessage(){
+			$.get(
+					"savemessage.jsp" ,
+					{
+						msg : document.getElementById("msg").value
+					} ,
+					function(res , stat){
+							document.getElementById("msg").value = "";
+					}
+				);
 		}
-		con.close();
+
+		var cnt = 0;
+
+		$(document).ready(
+				function(){
+					$(".typebox").keypress(
+							function(e){
+								if(e.keyCode == 13)saveMessage();
+							}
+						)
+				}
+			);
+
+		$(document).ready(
+				setInterval(
+				 function(){
+					$.get(
+						"getMessageCount.jsp" ,
+
+						function(res , stat){
+							if(parseInt(res) != cnt){
+								cnt = parseInt(res);
+								$.get(
+								"getLastMessage.jsp" ,
+								function(res , stat){
+									$(".board table").append(res);
+								}
+								);
+							}
+						}
+						)
+				}
+				 , 500
+				)
+				
+				
+			);
+	</script>
+
+
+</head>
+<body>
+<%
+	if(session.getAttribute("uname") == null){
+			response.sendRedirect("index.jsp");
+		}
+	String uname = session.getAttribute("uname") + "";
+	String other = request.getParameter("hid");
+	String tname = "";
+	if(uname.compareTo(other) > 0){
+		tname = uname + other;
 	}
-	catch(Exception e){
-		out.println("There are now messages yet!<br> Start Sending a message");
-		try{
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mdb","root"
-			,"44221100");
-			stmt = con.createStatement();
-			stmt.execute("create table "+table+" ( sender varchar(20) , msg varchar(200) );");
-			stmt.execute("insert into m"+request.getParameter("hid")+" values ('"+session.getAttribute("uname")+"');");
-			con.close();
-		}
-		catch(Exception ex){
-			out.println(" Some Error Occured : " + e + "<br>" + ex);
-		}
+	else{
+		tname = other + uname;
 	}
-	%>
+	session.setAttribute("table" , tname);
+%>
+	<a href = "dashboard.jsp" id = "home">HOME</a>
+
+<div class = "board" style="height: 600px; width: 80%">
+	<table>
+		
 	</table>
-	<form action = "savemessage.jsp">
-		<input type = "text" name = "msg" class = "typebox">
-		<input type = "submit" value = "Send" class = "sendbutton">
-	</form>
+</div>
+
+		<input type = "text" id = "msg" class = "typebox">
+		<button class = "sendbutton" onclick="saveMessage()">Send</button>
+
 </body>
 </html>

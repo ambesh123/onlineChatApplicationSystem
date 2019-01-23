@@ -38,10 +38,12 @@
 		}
 	%>
 	<%
-		String uname = ""+session.getAttribute("uname");
-		if(uname.length() == 0 || uname == "null"){
-			response.sendRedirect("index.html");
+		if(session.getAttribute("uname") == null){
+			response.sendRedirect("index.jsp");
 		}
+		
+		String uname = ""+session.getAttribute("uname");
+		
 	%>
 	<%@ page import = "java.sql.*" %>
 	<%

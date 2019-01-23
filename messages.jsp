@@ -10,7 +10,9 @@
 </head>
 <body onload = "document.hidden.style.display = 'none'">
 
-<%
+<%    if(session.getAttribute("uname") == null){
+				response.sendRedirect("index.jsp");
+			}
 		String tbl = "m" + session.getAttribute("uname");
 %>
 <form name = "hidden" action = "chat.jsp">
