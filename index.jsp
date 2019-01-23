@@ -3,7 +3,7 @@
 <body bgcolor = "AA8899">
 	<%
 		String uname = "" + session.getAttribute("uname");
-		if(!uname.equals("null")){response.sendRedirect("dashboard.jsp");}
+		if(session.getAttribute("uname") != null){response.sendRedirect("dashboard.jsp");}
 	%>
 	<%!
 		String pbr(int x){

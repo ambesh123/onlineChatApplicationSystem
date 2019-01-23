@@ -2,26 +2,89 @@
 <html>
 <head>
 	<title>CHAT</title>
-	<style type="text/css">
-		
-	#home{
-		position: fixed;
-		right: 10px;
-		font-size: 20px;
-	}
-	</style>
+	<link rel = "stylesheet" href = "css/sendbox.css" type = "text/css" >
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+	<script >
+
+		function saveMessage(){
+			$.get(
+					"savemessage.jsp" ,
+					{
+						msg : document.getElementById("msg").value
+					} ,
+					function(res , stat){
+							document.getElementById("msg").value = "";
+					}
+				);
+		}
+
+		var cnt = 0;
+
+		$(document).ready(
+				function(){
+					$(".typebox").keypress(
+							function(e){
+								if(e.keyCode == 13)saveMessage();
+							}
+						)
+				}
+			);
+
+		$(document).ready(
+				setInterval(
+				 function(){
+					$.get(
+						"getMessageCount.jsp" ,
+
+						function(res , stat){
+							if(parseInt(res) != cnt){
+								cnt = parseInt(res);
+								$.get(
+								"getLastMessage.jsp" ,
+								function(res , stat){
+									$(".board table").append(res);
+								}
+								);
+							}
+						}
+						)
+				}
+				 , 500
+				)
+				
+				
+			);
+	</script>
+
+
 </head>
 <body>
 <%
 	if(session.getAttribute("uname") == null){
 			response.sendRedirect("index.jsp");
 		}
-	session.setAttribute("reciever" , request.getParameter("hid"));
+	String uname = session.getAttribute("uname") + "";
+	String other = request.getParameter("hid");
+	String tname = "";
+	if(uname.compareTo(other) > 0){
+		tname = uname + other;
+	}
+	else{
+		tname = other + uname;
+	}
+	session.setAttribute("table" , tname);
 %>
 	<a href = "dashboard.jsp" id = "home">HOME</a>
 
-	<iframe class="msgbox" src="chat1.jsp" height="550" width="100%"></iframe>
-	<br>
- 	 <iframe class="typebox" src="chat2.jsp" height="120" width="100%"></iframe>
+<div class = "board" style="height: 600px; width: 80%">
+	<table>
+		
+	</table>
+</div>
+
+		<input type = "text" id = "msg" class = "typebox">
+		<button class = "sendbutton" onclick="saveMessage()">Send</button>
+
 </body>
 </html>

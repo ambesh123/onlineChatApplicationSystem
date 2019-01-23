@@ -9,7 +9,7 @@
 			String msg = request.getParameter("msg");
 			stmt.executeUpdate("insert into "+session.getAttribute("table")+" values ('"+sender+"' , '"+msg+"');");
 			con.close();
-			response.sendRedirect("chat.jsp");
+			out.println(sender+" : "+msg);
 		}
 		catch(Exception ex){
 			out.println(" Some Error Occured : "+ ex);

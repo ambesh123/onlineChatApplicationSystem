@@ -4,13 +4,9 @@
 	<link rel = "stylesheet" href = "css/sendbox.css" type = "text/css" >
 	<script>
          
-            function AutoRefresh( t ) {
-               setTimeout("location.reload(true);", t);
-            }
-         
       </script>
 </head>
-<body onload = "AutoRefresh(2000);">
+<body>
 	<table>
 	<%@ page import = "java.sql.*" %>
 	<%

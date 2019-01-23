@@ -11,6 +11,9 @@
 <body onload = "document.hidden.style.display = 'none'">
 
 <%
+		if(session.getAttribute("uname") == null){
+			response.sendRedirect("index.jsp");
+		}
 		String su = request.getParameter("searcheduser");
 		out.println("<h2>Searched KeyWord : " + su + "<br><h2>");
 %>
